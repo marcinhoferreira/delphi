@@ -1,0 +1,80 @@
+unit TesteWK.Model.Entidade.Cliente;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  TesteWK.Classe.Cliente;
+
+type
+  TModelEntidadeCliente = class(TDataModule)
+    qryClientes: TFDQuery;
+    qryClientescodigo: TWideStringField;
+    qryClientesnome: TWideStringField;
+    qryClientescidade: TWideStringField;
+    qryClientesuf: TWideStringField;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure OpenWhere(ClausulaWhere: String = '');
+    function GetCliente(const ACodigo: String): TWKCliente;
+    function GetClientes(const ACodigo: String = ''): TListaWKClientes;
+  end;
+
+var
+  ModelEntidadeCliente: TModelEntidadeCliente;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+uses
+   TesteWK.Model.Conexao;
+
+{$R *.dfm}
+
+{ TModelEntidadeCliente }
+
+function TModelEntidadeCliente.GetCliente(const ACodigo: String): TWKCliente;
+begin
+   OpenWhere('WHERE codigo = ' + QuotedStr(ACodigo));
+   Result := TWKCliente.Create;
+   if not qryClientes.IsEmpty then
+      begin
+         Result.Codigo := qryClientes.FieldByName('codigo').AsString;
+         Result.Nome := qryClientes.FieldByName('nome').AsString;
+         Result.cidade := qryClientes.FieldByName('cidade').AsString;
+         Result.uf := qryClientes.FieldByName('uf').AsString;
+      end;
+end;
+
+function TModelEntidadeCliente.GetClientes(
+  const ACodigo: String): TListaWKClientes;
+begin
+   if ACodigo <> '' then
+      OpenWhere('WHERE codigo = ' + QuotedStr(ACodigo))
+   else
+      OpenWhere();
+   Result := TWKCliente.Create;
+   if not qryClientes.IsEmpty then
+      begin
+         Result.Codigo := qryClientes.FieldByName('codigo').AsString;
+         Result.Nome := qryClientes.FieldByName('nome').AsString;
+         Result.cidade := qryClientes.FieldByName('cidade').AsString;
+         Result.uf := qryClientes.FieldByName('uf').AsString;
+      end;
+end;
+
+procedure TModelEntidadeCliente.OpenWhere(ClausulaWhere: String);
+begin
+   if qryClientes.Active then
+      qryClientes.Close;
+   qryClientes.MacroByName('clausula_where').Value := ClausulaWhere;
+   qryClientes.Open;
+end;
+
+end.

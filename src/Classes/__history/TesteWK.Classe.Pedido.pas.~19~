@@ -1,0 +1,226 @@
+unit TesteWK.Classe.Pedido;
+
+interface
+
+uses
+   SysUtils, Classes,
+   TesteWK.Classe.Cliente;
+
+type
+   TWKItemPedido = class(TObject)
+   private
+      { Private declarations }
+      fId: Integer;
+      fCodigoProduto: String;
+      fQuantidade: Double;
+      fValorUnitario: Double;
+      fValorTotal: Double;
+      function GetCodigoProduto: String;
+      function GetId: Integer;
+      function GetQuantidade: Double;
+      function GetValorTotal: Double;
+      function GetValorUnitario: Double;
+      procedure SetCodigoProduto(const Value: String);
+      procedure SetId(const Value: Integer);
+      procedure SetQuantidade(const Value: Double);
+      procedure SetValorTotal(const Value: Double);
+      procedure SetValorUnitario(const Value: Double);
+   protected
+      { Protected declarations }
+   public
+      { Public declarations }
+      property Id: Integer Read GetId Write SetId;
+      property CodigoProduto: String Read GetCodigoProduto Write SetCodigoProduto;
+      property Quantidade: Double Read GetQuantidade Write SetQuantidade;
+      property ValorUnitario: Double Read GetValorUnitario Write SetValorUnitario;
+      property ValorTotal: Double Read GetValorTotal Write SetValorTotal;
+   end;
+
+   TArrayWKItensPedido = Array Of TWKItemPedido;
+
+   TListaWKItensPedido = class(TObject)
+   private
+      { Private declarations }
+      fItems: TArrayWKItensPedido;
+   protected
+      { Protected declarations }
+   public
+      { Public declarations }
+      function Tamanho: Integer;
+      function Add(AItemPedido: TWKItemPedido): Integer;
+      property Items: TArrayWKItensPedido Read fItems Write fItems;
+   end;
+
+   TWKPedido = class(TObject)
+   private
+      { Private declarations }
+      fNumero: Integer;
+      fDataEmissao: TDateTime;
+      fCliente: TWKCliente;
+      fValorTotal: Double;
+      fItensPedido: TListaWKItensPedido;
+      function GetCliente: TWKCliente;
+      function GetDataEmissao: TDateTime;
+      function GetNumero: Integer;
+      function GetValorTotal: Double;
+      procedure SetCliente(const Value: TWKCliente);
+      procedure SetDataEmissao(const Value: TDateTime);
+      procedure SetNumero(const Value: Integer);
+      procedure SetValorTotal(const Value: Double);
+      function GetItensPedido: TListaWKItensPedido;
+      procedure SetItensPedido(const Value: TListaWKItensPedido);
+   protected
+      { Protected declarations }
+   public
+      { Public declarations }
+      constructor Create;
+      destructor Destroy; Override;
+      property Numero: Integer Read GetNumero Write SetNumero;
+      property DataEmissao: TDateTime Read GetDataEmissao Write SetDataEmissao;
+      property Cliente: TWKCliente Read GetCliente Write SetCliente;
+      property ValorTotal: Double Read GetValorTotal Write SetValorTotal;
+      property ItensPedido: TListaWKItensPedido Read GetItensPedido Write SetItensPedido;
+   end;
+
+implementation
+
+{ TWKPedido }
+
+constructor TWKPedido.Create;
+begin
+   fCliente := TWKCliente.Create;
+end;
+
+destructor TWKPedido.Destroy;
+begin
+   FreeAndNil(fCliente);
+  inherited;
+end;
+
+function TWKPedido.GetCliente: TWKCliente;
+begin
+   Result := fCliente;
+end;
+
+function TWKPedido.GetDataEmissao: TDateTime;
+begin
+   Result := fDataEmissao;
+end;
+
+function TWKPedido.GetItensPedido: TListaWKItensPedido;
+begin
+   Result := fItensPedido;
+end;
+
+function TWKPedido.GetNumero: Integer;
+begin
+   Result := fNumero;
+end;
+
+function TWKPedido.GetValorTotal: Double;
+begin
+   Result := fValorTotal;
+end;
+
+procedure TWKPedido.SetCliente(const Value: TWKCliente);
+begin
+   if Value <> fCliente then
+      fCliente := Value;
+end;
+
+procedure TWKPedido.SetDataEmissao(const Value: TDateTime);
+begin
+   if Value <> fDataEmissao then
+      fDataEmissao := Value;
+end;
+
+procedure TWKPedido.SetItensPedido(const Value: TListaWKItensPedido);
+begin
+   if Value <> fItensPedido then
+      fItensPedido := Value;
+end;
+
+procedure TWKPedido.SetNumero(const Value: Integer);
+begin
+   if Value <> fNumero then
+      fNumero := Value;
+end;
+
+procedure TWKPedido.SetValorTotal(const Value: Double);
+begin
+   if Value <> fValorTotal then
+      fValorTotal := Value;
+end;
+
+{ TWKItemPedido }
+
+function TWKItemPedido.GetCodigoProduto: String;
+begin
+   Result := fCodigoProduto;
+end;
+
+function TWKItemPedido.GetId: Integer;
+begin
+   Result := fId;
+end;
+
+function TWKItemPedido.GetQuantidade: Double;
+begin
+   Result := fQuantidade;
+end;
+
+function TWKItemPedido.GetValorTotal: Double;
+begin
+   Result := fValorTotal;
+end;
+
+function TWKItemPedido.GetValorUnitario: Double;
+begin
+   Result := fValorUnitario;
+end;
+
+procedure TWKItemPedido.SetCodigoProduto(const Value: String);
+begin
+   if Value <> fCodigoProduto then
+      fCodigoProduto := Value;
+end;
+
+procedure TWKItemPedido.SetId(const Value: Integer);
+begin
+   if Value <> fId then
+      fId := Value;
+end;
+
+procedure TWKItemPedido.SetQuantidade(const Value: Double);
+begin
+   if Value <> fQuantidade then
+      fQuantidade := Value;
+end;
+
+procedure TWKItemPedido.SetValorTotal(const Value: Double);
+begin
+   if Value <> fValorTotal then
+      fValorTotal := Value;
+end;
+
+procedure TWKItemPedido.SetValorUnitario(const Value: Double);
+begin
+   if Value <> fValorUnitario then
+      fValorUnitario := Value;
+end;
+
+{ TListaWKItensPedido }
+
+function TListaWKItensPedido.Add(AItemPedido: TWKItemPedido): Integer;
+begin
+   SetLength(fItems, Tamanho + 1);
+   fItems[High(fItems)] := AItemPedido;
+   Result := High(fItems);
+end;
+
+function TListaWKItensPedido.Tamanho: Integer;
+begin
+   Result := Length(fItems);
+end;
+
+end.

@@ -1,0 +1,41 @@
+unit TesteWK.Model.Conexao;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Moni.Base,
+  FireDAC.Moni.RemoteClient, FireDAC.Comp.Client, FireDAC.Comp.UI, Data.DB;
+
+type
+  TModelConexao = class(TDataModule)
+    conConexaoServidor: TFDConnection;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    trTransacao: TFDTransaction;
+    FDMoniRemoteClientLink1: TFDMoniRemoteClientLink;
+    FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+
+  end;
+
+var
+  ModelConexao: TModelConexao;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+procedure TModelConexao.DataModuleCreate(Sender: TObject);
+begin
+   FDPhysMySQLDriverLink1.VendorHome := ExtractFilePath(ParamStr(0));
+end;
+
+end.

@@ -1,0 +1,26 @@
+unit TesteWK.Classe.Produto;
+
+interface
+
+uses
+   SysUtils, Classes;
+
+type
+   TWKProduto = class(TObject)
+   private
+      { Private declarations }
+      fCodigo: String;
+      fDescricao: String;
+      fPrecoVenda: Double;
+   protected
+      { Protected declarations }
+   public
+      { Public declarations }
+      property Codigo: String Read GetCodigo Write SetCodigo;
+      property Descricao: String Read GetDescricao Write SetDescricao;
+      property PrecoVenda: Double Read GetPrecoVenda Write SetPrecoVenda;
+   end;
+
+implementation
+
+end.

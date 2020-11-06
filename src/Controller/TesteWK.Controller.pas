@@ -1,0 +1,63 @@
+unit TesteWK.Controller;
+
+interface
+
+uses
+   SysUtils, Classes,
+   TesteWK.Model.Entidade.Cliente,
+   TesteWK.Model.Entidade.Produto,
+   TesteWK.Model.Entidade.Pedido;
+
+type
+   TController = class(TObject)
+   private
+      { Private declarations }
+      fCliente: TModelEntidadeCliente;
+      fProduto: TModelEntidadeProduto;
+      fPedido: TModelEntidadePedido;
+   protected
+      { Protected declarations }
+   public
+      { Public declarations }
+      constructor Create;
+      destructor Destroy; Override;
+      function Cliente: TModelEntidadeCliente;
+      function Produto: TModelEntidadeProduto;
+      function Pedido: TModelEntidadePedido;
+   end;
+
+implementation
+
+{ TController }
+
+function TController.Cliente: TModelEntidadeCliente;
+begin
+   Result := fCliente;
+end;
+
+constructor TController.Create;
+begin
+   fCliente := TModelEntidadeCliente.Create(Nil);
+   fProduto := TModelEntidadeProduto.Create(Nil);
+   fPedido := TModelEntidadePedido.Create(Nil);
+end;
+
+destructor TController.Destroy;
+begin
+   FreeAndNil(fCliente);
+   FreeAndNil(fProduto);
+   FreeAndNil(fPedido);
+  inherited;
+end;
+
+function TController.Pedido: TModelEntidadePedido;
+begin
+   Result := fPedido;
+end;
+
+function TController.Produto: TModelEntidadeProduto;
+begin
+   Result := fProduto;
+end;
+
+end.

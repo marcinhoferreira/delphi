@@ -1,0 +1,20 @@
+unit TesteWK.Classe.Produto;
+
+interface
+
+uses
+   SysUtils, Classes;
+
+type
+   TWKProduto = class(TObject)
+   private
+      { Private declarations }
+   protected
+      { Protected declarations }
+   public
+      { Public declarations }
+   end;
+
+implementation
+
+end.

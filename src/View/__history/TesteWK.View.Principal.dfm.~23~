@@ -1,0 +1,183 @@
+object frmPrincipal: TfrmPrincipal
+  Left = 0
+  Top = 0
+  Caption = 'frmPrincipal'
+  ClientHeight = 481
+  ClientWidth = 824
+  Color = clBtnFace
+  Constraints.MinHeight = 520
+  Constraints.MinWidth = 800
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object panPedido: TPanel
+    Left = 0
+    Top = 0
+    Width = 824
+    Height = 77
+    Align = alTop
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    TabOrder = 0
+    ExplicitWidth = 784
+    object lblCliente: TLabel
+      Left = 12
+      Top = 12
+      Width = 37
+      Height = 13
+      Caption = 'Cliente:'
+      FocusControl = cmbCliente
+    end
+    object cmbCliente: TComboBox
+      Left = 12
+      Top = 32
+      Width = 381
+      Height = 21
+      Style = csDropDownList
+      TabOrder = 0
+      OnChange = cmbClienteChange
+    end
+  end
+  object panItensPedido: TPanel
+    Left = 0
+    Top = 77
+    Width = 824
+    Height = 76
+    Align = alTop
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    TabOrder = 1
+    ExplicitTop = 109
+    ExplicitWidth = 784
+    object lblCodigoProduto: TLabel
+      Left = 12
+      Top = 12
+      Width = 37
+      Height = 13
+      Caption = 'C'#243'digo:'
+      FocusControl = edtCodigoProduto
+    end
+    object lblDescricaoProduto: TLabel
+      Left = 98
+      Top = 12
+      Width = 50
+      Height = 13
+      Caption = 'Descri'#231#227'o:'
+      FocusControl = edtDescricaoProduto
+    end
+    object lblQuantidadeProduto: TLabel
+      Left = 508
+      Top = 12
+      Width = 60
+      Height = 13
+      Caption = 'Quantidade:'
+      FocusControl = edtQuantidadeProduto
+    end
+    object lblValorUnitarioProduto: TLabel
+      Left = 594
+      Top = 12
+      Width = 68
+      Height = 13
+      Caption = 'Valor Unit'#225'rio:'
+      FocusControl = edtValorUnitarioProduto
+    end
+    object edtCodigoProduto: TEdit
+      Left = 12
+      Top = 32
+      Width = 80
+      Height = 21
+      CharCase = ecUpperCase
+      MaxLength = 8
+      TabOrder = 0
+      OnExit = edtCodigoProdutoExit
+      OnKeyPress = edtCodigoProdutoKeyPress
+    end
+    object edtDescricaoProduto: TEdit
+      Left = 98
+      Top = 32
+      Width = 404
+      Height = 21
+      CharCase = ecUpperCase
+      Color = clInactiveCaption
+      Enabled = False
+      TabOrder = 1
+    end
+    object edtQuantidadeProduto: TEdit
+      Left = 508
+      Top = 32
+      Width = 80
+      Height = 21
+      Alignment = taRightJustify
+      CharCase = ecUpperCase
+      TabOrder = 2
+      OnKeyPress = edtQuantidadeProdutoKeyPress
+    end
+    object edtValorUnitarioProduto: TEdit
+      Left = 594
+      Top = 32
+      Width = 114
+      Height = 21
+      Alignment = taRightJustify
+      CharCase = ecUpperCase
+      TabOrder = 3
+      OnKeyPress = edtValorUnitarioProdutoKeyPress
+    end
+    object btnRegistrar: TButton
+      Left = 714
+      Top = 28
+      Width = 75
+      Height = 25
+      Caption = 'Registrar'
+      TabOrder = 4
+    end
+  end
+  object memItensPedido: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 608
+    Top = 236
+    object memItensPedidoid: TIntegerField
+      FieldName = 'id'
+    end
+    object memItensPedidocodigo_produto: TStringField
+      FieldName = 'codigo_produto'
+      Size = 8
+    end
+    object memItensPedidodescricao: TStringField
+      FieldName = 'descricao'
+      Size = 255
+    end
+    object memItensPedidoquantidade: TFloatField
+      FieldName = 'quantidade'
+    end
+    object memItensPedidovalor_unitario: TFloatField
+      FieldName = 'valor_unitario'
+    end
+    object memItensPedidovalor_total: TFloatField
+      FieldKind = fkCalculated
+      FieldName = 'valor_total'
+      Calculated = True
+    end
+  end
+  object dsItensPedido: TDataSource
+    AutoEdit = False
+    DataSet = memItensPedido
+    Left = 608
+    Top = 280
+  end
+end

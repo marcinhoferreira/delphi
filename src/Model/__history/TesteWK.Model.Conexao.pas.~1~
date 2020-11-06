@@ -1,0 +1,25 @@
+unit TesteWK.Model.Conexao;
+
+interface
+
+uses
+  System.SysUtils, System.Classes;
+
+type
+  TModelConexao = class(TDataModule)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  ModelConexao: TModelConexao;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+end.

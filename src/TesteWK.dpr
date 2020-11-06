@@ -1,0 +1,23 @@
+program TesteWK;
+
+uses
+  Vcl.Forms,
+  TesteWK.Classe.Cliente in 'Classes\TesteWK.Classe.Cliente.pas',
+  TesteWK.Classe.Produto in 'Classes\TesteWK.Classe.Produto.pas',
+  TesteWK.Classe.Pedido in 'Classes\TesteWK.Classe.Pedido.pas',
+  TesteWK.Model.Conexao in 'Model\TesteWK.Model.Conexao.pas' {ModelConexao: TDataModule},
+  TesteWK.Model.Entidade.Cliente in 'Model\TesteWK.Model.Entidade.Cliente.pas' {ModelEntidadeCliente: TDataModule},
+  TesteWK.Model.Entidade.Produto in 'Model\TesteWK.Model.Entidade.Produto.pas' {ModelEntidadeProduto: TDataModule},
+  TesteWK.Model.Entidade.Pedido in 'Model\TesteWK.Model.Entidade.Pedido.pas' {ModelEntidadePedido: TDataModule},
+  TesteWK.View.Principal in 'View\TesteWK.View.Principal.pas' {frmPrincipal},
+  TesteWK.Controller in 'Controller\TesteWK.Controller.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TModelConexao, ModelConexao);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.Run;
+end.

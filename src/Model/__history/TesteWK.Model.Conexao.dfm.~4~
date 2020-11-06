@@ -1,0 +1,41 @@
+object ModelConexao: TModelConexao
+  OldCreateOrder = False
+  OnCreate = DataModuleCreate
+  Height = 150
+  Width = 548
+  object conConexaoServidor: TFDConnection
+    Params.Strings = (
+      'Database=teste_wk'
+      'User_Name=root'
+      'Password=Le@l#3101'
+      'MonitorBy=Remote'
+      'Port=3307'
+      'LoginTimeout=30000'
+      'ReadTimeout=30000'
+      'WriteTimeout=30000'
+      'CharacterSet=utf8'
+      'DriverID=MySQL')
+    Transaction = trTransacao
+    Left = 40
+    Top = 8
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 148
+    Top = 8
+  end
+  object trTransacao: TFDTransaction
+    Connection = conConexaoServidor
+    Left = 40
+    Top = 52
+  end
+  object FDMoniRemoteClientLink1: TFDMoniRemoteClientLink
+    Left = 272
+    Top = 8
+  end
+  object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
+    VendorHome = 'E:\Estudos\WK Tecnology\bin\Win32\Debug'
+    Left = 408
+    Top = 8
+  end
+end

@@ -1,0 +1,45 @@
+object ModelEntidadeCliente: TModelEntidadeCliente
+  OldCreateOrder = False
+  Height = 74
+  Width = 282
+  object qryClientes: TFDQuery
+    Connection = ModelConexao.conConexaoServidor
+    SQL.Strings = (
+      'SELECT codigo, nome, cidade, uf'
+      'FROM clientes'
+      '&clausula_where'
+      'ORDER BY nome')
+    Left = 32
+    Top = 8
+    MacroData = <
+      item
+        Value = Null
+        Name = 'CLAUSULA_WHERE'
+      end>
+    object qryClientescodigo: TWideStringField
+      FieldName = 'codigo'
+      Origin = 'codigo'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Size = 8
+    end
+    object qryClientesnome: TWideStringField
+      FieldName = 'nome'
+      Origin = 'nome'
+      Required = True
+      Size = 255
+    end
+    object qryClientescidade: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'cidade'
+      Origin = 'cidade'
+      Size = 255
+    end
+    object qryClientesuf: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'uf'
+      Origin = 'uf'
+      Size = 2
+    end
+  end
+end
