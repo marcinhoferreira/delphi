@@ -28,6 +28,8 @@ type
     dsPedidos_Produtos: TDataSource;
     dsPedidos: TDataSource;
     DBGrid1: TDBGrid;
+    lblNumeroPedido: TLabel;
+    edtNumeroPedido: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -60,11 +62,34 @@ uses
 { TfrmPrincipal }
 
 procedure TfrmPrincipal.btnRegistrarClick(Sender: TObject);
+var
+   AItem: TWKItemPedido;
+   ADecimalSeparator: Char;
+   AFormato: TFormatSettings;
 begin
-   if fController.Pedido.IsEmpty then
-      begin
-         APedido := TWKPedido.Create;
-      end;
+   AItem := TWKItemPedido.Create;
+   try
+      GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, AFormato);
+      if fPedido.Numero <= 0 then
+         begin
+            fPedido.DataEmissao := Date();
+            fPedido.Cliente := fController.Cliente.GetCliente(fController.Cliente.GetCodigo(cmbCliente.Items[cmbCliente.ItemIndex]));
+            fPedido.ValorTotal := 0;
+         end;
+      // Item do Pedido
+      AItem.CodigoProduto := edtCodigoProduto.Text;
+      ADecimalSeparator := AFormato.DecimalSeparator;
+      AFormato.DecimalSeparator := '.';
+      AItem.Quantidade := StrToFloat(edtQuantidadeProduto.Text);
+      AItem.ValorUnitario := StrToFloat(edtValorUnitarioProduto.Text);
+      AFormato.DecimalSeparator := ADecimalSeparator;
+      AItem.ValorTotal := AItem.ValorUnitario * AItem.Quantidade;
+      fPedido.ItensPedido.Add(AItem);
+      fPedido.ValorTotal := fPedido.ValorTotal + AItem.ValorTotal;
+      fController.Pedido.InserePedido(fPedido);
+   finally
+      FreeAndNil(AItem);
+   end;
 end;
 
 procedure TfrmPrincipal.CarregaClientes;
@@ -90,7 +115,9 @@ begin
    if TComboBox(Sender).ItemIndex >= 0 then
       begin
          fController.Pedido.OpenWhere('WHERE codigo_cliente = ' + fController.Cliente.GetCodigo(TComboBox(Sender).Items[TComboBox(Sender).ItemIndex]));
+         fPedido := fController.Pedido.GetPedido(fController.Pedido.GetPedidoNumero);
       end;
+   edtNumeroPedido.Text := fPedido.Numero.ToString;
 end;
 
 procedure TfrmPrincipal.edtCodigoProdutoExit(Sender: TObject);
@@ -140,12 +167,14 @@ end;
 
 procedure TfrmPrincipal.FormCreate(Sender: TObject);
 begin
+   fPedido := TWKPedido.Create;
    fController := TController.Create;
 end;
 
 procedure TfrmPrincipal.FormDestroy(Sender: TObject);
 begin
    FreeAndNil(fController);
+   FreeAndNil(fPedido);
 end;
 
 procedure TfrmPrincipal.FormKeyPress(Sender: TObject; var Key: Char);

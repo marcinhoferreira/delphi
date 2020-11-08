@@ -29,7 +29,6 @@ object frmPrincipal: TfrmPrincipal
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    ExplicitWidth = 784
     object lblCliente: TLabel
       Left = 12
       Top = 12
@@ -37,6 +36,14 @@ object frmPrincipal: TfrmPrincipal
       Height = 13
       Caption = 'Cliente:'
       FocusControl = cmbCliente
+    end
+    object lblNumeroPedido: TLabel
+      Left = 399
+      Top = 12
+      Width = 36
+      Height = 13
+      Caption = 'Pedido:'
+      FocusControl = edtNumeroPedido
     end
     object cmbCliente: TComboBox
       Left = 12
@@ -46,6 +53,17 @@ object frmPrincipal: TfrmPrincipal
       Style = csDropDownList
       TabOrder = 0
       OnChange = cmbClienteChange
+    end
+    object edtNumeroPedido: TEdit
+      Left = 399
+      Top = 32
+      Width = 80
+      Height = 21
+      CharCase = ecUpperCase
+      Color = clInactiveCaption
+      Enabled = False
+      MaxLength = 8
+      TabOrder = 1
     end
   end
   object panItensPedido: TPanel
@@ -57,8 +75,6 @@ object frmPrincipal: TfrmPrincipal
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 1
-    ExplicitTop = 109
-    ExplicitWidth = 784
     object lblCodigoProduto: TLabel
       Left = 12
       Top = 12
@@ -139,6 +155,7 @@ object frmPrincipal: TfrmPrincipal
       Height = 25
       Caption = 'Registrar'
       TabOrder = 4
+      OnClick = btnRegistrarClick
     end
   end
   object DBGrid1: TDBGrid
@@ -158,21 +175,48 @@ object frmPrincipal: TfrmPrincipal
       item
         Expanded = False
         FieldName = 'id'
-        Visible = True
+        Title.Alignment = taCenter
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'codigo_produto'
+        Title.Alignment = taCenter
+        Title.Caption = 'C'#243'digo'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'descricao_produto_lookup'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'Descri'#231#227'o do Produto'
+        Width = 404
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'quantidade'
+        Title.Alignment = taCenter
+        Title.Caption = 'Quantidade'
+        Width = 100
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'valor_unitario'
+        Title.Alignment = taCenter
+        Title.Caption = 'Valor Unit'#225'rio'
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'valor_total'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'Valor Total'
+        Width = 100
         Visible = True
       end>
   end

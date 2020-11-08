@@ -3,7 +3,7 @@ object frmPrincipal: TfrmPrincipal
   Top = 0
   Caption = 'frmPrincipal'
   ClientHeight = 481
-  ClientWidth = 824
+  ClientWidth = 925
   Color = clBtnFace
   Constraints.MinHeight = 520
   Constraints.MinWidth = 800
@@ -23,13 +23,13 @@ object frmPrincipal: TfrmPrincipal
   object panPedido: TPanel
     Left = 0
     Top = 0
-    Width = 824
+    Width = 925
     Height = 77
     Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    ExplicitWidth = 784
+    ExplicitWidth = 824
     object lblCliente: TLabel
       Left = 12
       Top = 12
@@ -37,6 +37,22 @@ object frmPrincipal: TfrmPrincipal
       Height = 13
       Caption = 'Cliente:'
       FocusControl = cmbCliente
+    end
+    object lblNumeroPedido: TLabel
+      Left = 399
+      Top = 12
+      Width = 36
+      Height = 13
+      Caption = 'Pedido:'
+      FocusControl = edtNumeroPedido
+    end
+    object lblDataRegistroPedido: TLabel
+      Left = 485
+      Top = 13
+      Width = 27
+      Height = 13
+      Caption = 'Data:'
+      FocusControl = edtDataRegistroPedido
     end
     object cmbCliente: TComboBox
       Left = 12
@@ -47,18 +63,40 @@ object frmPrincipal: TfrmPrincipal
       TabOrder = 0
       OnChange = cmbClienteChange
     end
+    object edtNumeroPedido: TEdit
+      Left = 399
+      Top = 32
+      Width = 80
+      Height = 21
+      Alignment = taRightJustify
+      CharCase = ecUpperCase
+      Color = clInactiveCaption
+      Enabled = False
+      MaxLength = 8
+      TabOrder = 1
+    end
+    object edtDataRegistroPedido: TEdit
+      Left = 485
+      Top = 32
+      Width = 114
+      Height = 21
+      CharCase = ecUpperCase
+      Color = clInactiveCaption
+      Enabled = False
+      MaxLength = 8
+      TabOrder = 2
+    end
   end
   object panItensPedido: TPanel
     Left = 0
     Top = 77
-    Width = 824
+    Width = 925
     Height = 76
     Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 1
-    ExplicitTop = 109
-    ExplicitWidth = 784
+    ExplicitWidth = 824
     object lblCodigoProduto: TLabel
       Left = 12
       Top = 12
@@ -141,11 +179,20 @@ object frmPrincipal: TfrmPrincipal
       TabOrder = 4
       OnClick = btnRegistrarClick
     end
+    object btnExcluir: TButton
+      Left = 795
+      Top = 28
+      Width = 75
+      Height = 25
+      Caption = 'Excluir'
+      TabOrder = 5
+      OnClick = btnExcluirClick
+    end
   end
   object DBGrid1: TDBGrid
     Left = 0
     Top = 153
-    Width = 824
+    Width = 925
     Height = 328
     Align = alClient
     DataSource = dsPedidos_Produtos
@@ -167,7 +214,6 @@ object frmPrincipal: TfrmPrincipal
         FieldName = 'codigo_produto'
         Title.Alignment = taCenter
         Title.Caption = 'C'#243'digo'
-        Width = 64
         Visible = True
       end
       item

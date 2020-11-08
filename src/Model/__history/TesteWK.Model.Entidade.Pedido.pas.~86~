@@ -27,6 +27,8 @@ type
     qryPedidos_Produtosdescricao_produto_lookup: TStringField;
     procedure qryPedidos_ProdutosNewRecord(DataSet: TDataSet);
     procedure qryPedidos_ProdutosCalcFields(DataSet: TDataSet);
+    procedure qryPedidosAfterOpen(DataSet: TDataSet);
+    procedure qryPedidosBeforeClose(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -34,9 +36,11 @@ type
     procedure OpenWhere(ClausulaWhere: String = '');
     function IsEmpty: Boolean;
     function GetPedido(const ANumero: Integer): TWKPedido;
+    function GetPedidoNumero: Integer;
     function GetPedidos(const ANumero: Integer = 0): TListaWKPedidos;
     function GetItensPedido(const ANumero: Integer): TListaWKItensPedido;
-    function InserePedido(APedido: TWKPedido): Integer;
+    procedure InserePedido(APedido: TWKPedido);
+    procedure DeletaItem(AItem: TWKItemPedido);
   end;
 
 implementation
@@ -51,6 +55,30 @@ uses
 {$R *.dfm}
 
 { TModelEntidadePedido }
+
+procedure TModelEntidadePedido.DeletaItem(AItem: TWKItemPedido);
+var
+   AQuery: TFDQuery;
+begin
+   AQuery := TFDQuery.Create(Nil);
+   try
+      AQuery.Connection := ModelConexao.conConexaoServidor;
+      with AQuery.SQL do
+         begin
+            Clear;
+            Add('DELETE FROM pedidos_produtos');
+            Add('WHERE id = :id');
+         end;
+      // Definição dos parâmetros
+      AQuery.ParamByName('id').DataType := ftDateTime;
+      AQuery.ParamByName('id').ParamType := ptInput;
+      AQuery.ParamByName('id').Value := AItem.Id;
+      AQuery.ExecSQL;
+      qryPedidos_Produtos.Refresh;
+   finally
+      FreeAndNil(AQuery);
+   end;
+end;
 
 function TModelEntidadePedido.GetItensPedido(
   const ANumero: Integer): TListaWKItensPedido;
@@ -110,6 +138,13 @@ begin
       end;
 end;
 
+function TModelEntidadePedido.GetPedidoNumero: Integer;
+begin
+   Result := -1;
+   if not qryPedidos.IsEmpty then
+      Result := qryPedidos.FieldByName('numero').AsInteger;
+end;
+
 function TModelEntidadePedido.GetPedidos(
   const ANumero: Integer): TListaWKPedidos;
 var
@@ -157,39 +192,70 @@ begin
       end;
 end;
 
-function TModelEntidadePedido.InserePedido(APedido: TWKPedido): Integer;
+procedure TModelEntidadePedido.InserePedido(APedido: TWKPedido);
 var
    AQuery: TFDQuery;
+   AIndex: Integer;
 begin
    AQuery := TFDQuery.Create(Nil);
    try
       AQuery.Connection := ModelConexao.conConexaoServidor;
-      with AQuery.SQL do
+      if APedido.Numero <= 0 then
          begin
-            Clear;
-            Add('INSERT INTO pedidos');
-            Add('   (data_emissao, codigo_cliente, valor_total)');
-            Add('VALUES');
-            Add('   (:data_emissao, :codigo_cliente, :valor_total)');
-            Add('RETURNING numero {INTO :numero}');
+            with AQuery.SQL do
+               begin
+                  Clear;
+                  Add('INSERT INTO pedidos');
+                  Add('   (data_emissao, codigo_cliente, valor_total)');
+                  Add('VALUES');
+                  Add('   (:data_emissao, :codigo_cliente, :valor_total)');
+                  Add('RETURNING numero');
+               end;
+            // Definição dos parâmetros
+            AQuery.ParamByName('data_emissao').DataType := ftDateTime;
+            AQuery.ParamByName('data_emissao').ParamType := ptInput;
+            AQuery.ParamByName('data_emissao').Value := APedido.DataEmissao;
+            AQuery.ParamByName('codigo_cliente').DataType := ftString;
+            AQuery.ParamByName('codigo_cliente').ParamType := ptInput;
+            AQuery.ParamByName('codigo_cliente').Value := APedido.Cliente.Codigo;
+            AQuery.ParamByName('valor_total').DataType := ftFloat;
+            AQuery.ParamByName('valor_total').ParamType := ptInput;
+            AQuery.ParamByName('valor_total').Value := APedido.ValorTotal;
+            AQuery.Open;
+            APedido.Numero := AQuery.Fields[0].Value;
+            qryPedidos.Refresh;
          end;
-      // Definição dos parâmetros
-      AQuery.ParamByName('data_emissao').DataType := ftDateTime;
-      AQuery.ParamByName('data_emissao').ParamType := ptInput;
-      AQuery.ParamByName('data_emissao').Value := APedido.DataEmissao;
-      AQuery.ParamByName('codigo_cliente').DataType := ftString;
-      AQuery.ParamByName('codigo_cliente').ParamType := ptInput;
-      AQuery.ParamByName('codigo_cliente').Value := APedido.Cliente.Codigo;
-
-      FDQuery1.Params[1].AsInteger := 100;
-      FDQuery1.ExecSQL;
-      FDQuery1.Params[2].Value; // Value of a first parameter, listed in INTO
-      GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, AFormato);
-      AInstrucaoSQL.Clear;
-      with AInstrucaoSQL do
+      for AIndex := 0 to APedido.ItensPedido.Tamanho - 1 do
          begin
-            Clear;
+            if APedido.ItensPedido.Items[AIndex].Id <= 0 then
+               begin
+                  with AQuery.SQL do
+                     begin
+                        Clear;
+                        Add('INSERT INTO pedidos_produtos');
+                        Add('   (numero_pedido, codigo_produto, quantidade, valor_unitario)');
+                        Add('VALUES');
+                        Add('   (:numero_pedido, :codigo_produto, :quantidade, :valor_unitario)');
+                        Add('RETURNING id');
+                     end;
+                  // Definição dos parâmetros
+                  AQuery.ParamByName('numero_pedido').DataType := ftInteger;
+                  AQuery.ParamByName('numero_pedido').ParamType := ptInput;
+                  AQuery.ParamByName('numero_pedido').Value := APedido.Numero;
+                  AQuery.ParamByName('codigo_produto').DataType := ftString;
+                  AQuery.ParamByName('codigo_produto').ParamType := ptInput;
+                  AQuery.ParamByName('codigo_produto').Value := APedido.ItensPedido.Items[AIndex].CodigoProduto;
+                  AQuery.ParamByName('quantidade').DataType := ftFloat;
+                  AQuery.ParamByName('quantidade').ParamType := ptInput;
+                  AQuery.ParamByName('quantidade').Value := APedido.ItensPedido.Items[AIndex].Quantidade;
+                  AQuery.ParamByName('valor_unitario').DataType := ftFloat;
+                  AQuery.ParamByName('valor_unitario').ParamType := ptInput;
+                  AQuery.ParamByName('valor_unitario').Value := APedido.ItensPedido.Items[AIndex].ValorUnitario;
+                  AQuery.Open;
+                  APedido.ItensPedido.Items[AIndex].Id := AQuery.Fields[0].Value;
+               end;
          end;
+      AQuery.Close;
    finally
       FreeAndNil(AQuery);
    end;
@@ -206,6 +272,16 @@ begin
       qryPedidos.Close;
    qryPedidos.MacroByName('clausula_where').Value := ClausulaWhere;
    qryPedidos.Open;
+end;
+
+procedure TModelEntidadePedido.qryPedidosAfterOpen(DataSet: TDataSet);
+begin
+   qryPedidos_Produtos.Open();
+end;
+
+procedure TModelEntidadePedido.qryPedidosBeforeClose(DataSet: TDataSet);
+begin
+   qryPedidos_Produtos.Close();
 end;
 
 procedure TModelEntidadePedido.qryPedidos_ProdutosCalcFields(DataSet: TDataSet);

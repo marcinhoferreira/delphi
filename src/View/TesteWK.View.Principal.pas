@@ -28,6 +28,11 @@ type
     dsPedidos_Produtos: TDataSource;
     dsPedidos: TDataSource;
     DBGrid1: TDBGrid;
+    lblNumeroPedido: TLabel;
+    edtNumeroPedido: TEdit;
+    btnExcluir: TButton;
+    lblDataRegistroPedido: TLabel;
+    edtDataRegistroPedido: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -38,6 +43,7 @@ type
     procedure edtCodigoProdutoExit(Sender: TObject);
     procedure cmbClienteChange(Sender: TObject);
     procedure btnRegistrarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
   private
     { Private declarations }
     fPedido: TWKPedido;
@@ -59,24 +65,51 @@ uses
 
 { TfrmPrincipal }
 
-procedure TfrmPrincipal.btnRegistrarClick(Sender: TObject);
+procedure TfrmPrincipal.btnExcluirClick(Sender: TObject);
 var
-   APedido: TWKPedido;
    AItem: TWKItemPedido;
 begin
-   APedido := TWKPedido.Create;
    AItem := TWKItemPedido.Create;
    try
-      APedido.DataEmissao := Date();
-      APedido.Cliente := fController.Cliente.GetCliente(fController.Cliente.GetCodigo(cmbCliente.Items[cmbCliente.ItemIndex]));
-      APedido.ValorTotal := 0;
-      APedido.Numero := fController.Pedido.InserePedido(APedido);
-      AItem.CodigoProduto := edtCodigoProduto.Text;
-      AItem.Quantidade := StrToFloat(edtQuantidadeProduto.Text);
-      AItem.ValorUnitario := StrToFloat(edtValorUnitarioProduto.Text);
+      if MessageDlg('Confirma exclusão?', mtConfirmation, [mbYes, mbNo], 0, mbNo) = mrYes then
+         begin
+            AItem.Id := dsPedidos_Produtos.DataSet.FieldByName('id').AsInteger;
+            fController.Pedido.DeletaItem(AItem);
+         end;
    finally
       FreeAndNil(AItem);
-      FreeAndNil(APedido);
+   end;
+end;
+
+procedure TfrmPrincipal.btnRegistrarClick(Sender: TObject);
+var
+   AItem: TWKItemPedido;
+   ADecimalSeparator: Char;
+   AFormato: TFormatSettings;
+begin
+   AItem := TWKItemPedido.Create;
+   try
+      GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, AFormato);
+      if fPedido.Numero <= 0 then
+         begin
+            fPedido.DataEmissao := Date();
+            fPedido.Cliente := fController.Cliente.GetCliente(fController.Cliente.GetCodigo(cmbCliente.Items[cmbCliente.ItemIndex]));
+            fPedido.ValorTotal := 0;
+         end;
+      // Item do Pedido
+      AItem.CodigoProduto := edtCodigoProduto.Text;
+      ADecimalSeparator := AFormato.DecimalSeparator;
+      AFormato.DecimalSeparator := '.';
+      AItem.Quantidade := StrToFloat(StringReplace(edtQuantidadeProduto.Text, '.', ',', [rfReplaceAll]));
+      AItem.ValorUnitario := StrToFloat(StringReplace(edtValorUnitarioProduto.Text, '.', ',', [rfReplaceAll]));
+      AFormato.DecimalSeparator := ADecimalSeparator;
+      AItem.ValorTotal := AItem.ValorUnitario * AItem.Quantidade;
+      fPedido.ItensPedido.Add(AItem);
+      fPedido.ValorTotal := fPedido.ValorTotal + AItem.ValorTotal;
+      fController.Pedido.InserePedido(fPedido);
+      dsPedidos_Produtos.DataSet.Refresh;
+   finally
+      FreeAndNil(AItem);
    end;
 end;
 
@@ -103,7 +136,12 @@ begin
    if TComboBox(Sender).ItemIndex >= 0 then
       begin
          fController.Pedido.OpenWhere('WHERE codigo_cliente = ' + fController.Cliente.GetCodigo(TComboBox(Sender).Items[TComboBox(Sender).ItemIndex]));
+         fPedido := fController.Pedido.GetPedido(fController.Pedido.GetPedidoNumero);
       end;
+   edtNumeroPedido.Text := fPedido.Numero.ToString;
+   edtDataRegistroPedido.Text := '';
+   if fPedido.Numero > 0 then
+      edtDataRegistroPedido.Text := FormatDateTime('dd/mm/yyyy', fPedido.DataEmissao);
 end;
 
 procedure TfrmPrincipal.edtCodigoProdutoExit(Sender: TObject);

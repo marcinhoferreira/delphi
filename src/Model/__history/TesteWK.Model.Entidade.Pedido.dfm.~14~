@@ -3,8 +3,6 @@ object ModelEntidadePedido: TModelEntidadePedido
   Height = 111
   Width = 299
   object qryPedidos: TFDQuery
-    AfterOpen = qryPedidosAfterOpen
-    BeforeClose = qryPedidosBeforeClose
     Connection = ModelConexao.conConexaoServidor
     SQL.Strings = (
       'SELECT numero, data_emissao, codigo_cliente, valor_total'

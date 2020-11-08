@@ -3,8 +3,6 @@ object ModelEntidadePedido: TModelEntidadePedido
   Height = 111
   Width = 299
   object qryPedidos: TFDQuery
-    AfterOpen = qryPedidosAfterOpen
-    BeforeClose = qryPedidosBeforeClose
     Connection = ModelConexao.conConexaoServidor
     SQL.Strings = (
       'SELECT numero, data_emissao, codigo_cliente, valor_total'
@@ -22,7 +20,6 @@ object ModelEntidadePedido: TModelEntidadePedido
       FieldName = 'numero'
       Origin = 'numero'
       ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = True
     end
     object qryPedidosdata_emissao: TDateField
       FieldName = 'data_emissao'
@@ -68,7 +65,6 @@ object ModelEntidadePedido: TModelEntidadePedido
       FieldName = 'id'
       Origin = 'id'
       ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = True
     end
     object qryPedidos_Produtosnumero_pedido: TLongWordField
       FieldName = 'numero_pedido'
